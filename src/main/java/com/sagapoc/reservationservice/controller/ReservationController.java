@@ -1,5 +1,6 @@
 package com.sagapoc.reservationservice.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sagapoc.reservationservice.model.Reservation;
 import com.sagapoc.reservationservice.service.ReservationService;
 import org.springframework.http.HttpStatus;
@@ -17,7 +18,7 @@ public class ReservationController {
 
 
     @PostMapping("/reservation")
-    public ResponseEntity<Reservation> makeReservation(@RequestBody Reservation request) {
+    public ResponseEntity<Reservation> makeReservation(@RequestBody Reservation request) throws JsonProcessingException {
         Reservation Reservation = this.ReservationService.registerReservationRequest(request);
         return new ResponseEntity<>(Reservation, HttpStatus.CREATED);
     }

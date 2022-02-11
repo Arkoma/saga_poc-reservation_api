@@ -1,5 +1,6 @@
 package com.sagapoc.reservationservice;
 
+import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sagapoc.reservationservice.model.Reservation;
 import com.sagapoc.reservationservice.model.StatusEnum;
@@ -12,11 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.annotation.DirtiesContext;
 
-import java.util.concurrent.TimeUnit;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
@@ -33,7 +30,7 @@ public class EmbeddedKafkaIT {
     @Value("${spring.kafka.template.default-topic}")
     private String topic;
 
-//    @Test
+    @Test
     public void givenEmbeddedKafkaBroker_whenSendingtoSimpleProducer_thenMessageReceived()
             throws Exception {
         final String hotelName = "Holiday Inn";
@@ -48,9 +45,7 @@ public class EmbeddedKafkaIT {
         reservation.setCarModel(carModel);
         reservation.setStatus(StatusEnum.PENDING);
         producer.send(topic, reservation);
-//        consumer.getLatch().await(10000, TimeUnit.MILLISECONDS);
-
-        assertThat(consumer.getLatch().getCount(), equalTo(0L));
+        Thread.sleep(5000);
         String json = consumer.getPayload();
         Reservation received = new ObjectMapper().readValue(json, Reservation.class);
         assertEquals(reservation.getCustomerName(), received.getCustomerName());
