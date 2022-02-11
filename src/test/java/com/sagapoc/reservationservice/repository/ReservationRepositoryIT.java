@@ -1,5 +1,7 @@
 package com.sagapoc.reservationservice.repository;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sagapoc.reservationservice.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +31,7 @@ class ReservationRepositoryIT {
     }
 
     @Test
-    void testSaveReservation() {
+    void testSaveReservation() throws JsonProcessingException {
         final String hotelName = "Holiday Inn";
         final String carMake = "Ford";
         final String carModel = "Model-T";
@@ -41,6 +43,7 @@ class ReservationRepositoryIT {
         reservation.setCarMake(carMake);
         reservation.setCarModel(carModel);
         reservation.setStatus(StatusEnum.PENDING);
+        String json = new ObjectMapper().writeValueAsString(reservation);
         Reservation savedReservation = underTest.save(reservation);
         Reservation retrievedReservationFromDB = underTest.findById(savedReservation.getId()).orElse(null);
         assertAll(() -> {
