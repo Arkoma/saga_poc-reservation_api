@@ -14,7 +14,7 @@ public class KafkaConsumer {
     private String payload = null;
     private CountDownLatch latch = new CountDownLatch(0);
 
-    @KafkaListener(topics = "${kafka.topicName}")
+    @KafkaListener(topics = "${spring.kafka.template.default-topic}")
     public void receive(String reservation) {
         System.out.println("received payload='" + reservation.toString() + "'");
         setPayload(reservation);
