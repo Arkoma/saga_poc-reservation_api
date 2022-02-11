@@ -1,7 +1,8 @@
 package com.sagapoc.reservationservice.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sagapoc.reservationservice.model.Reservation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
@@ -14,8 +15,9 @@ public class KafkaProducer {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public void send(String topic, Reservation payload) {
+    public void send(String topic, Reservation payload) throws JsonProcessingException {
         System.out.println("sending payload='" + payload.toString() + "' to topic='" + topic + "'");
-        kafkaTemplate.send(topic, payload.toString());
+        String json = new ObjectMapper().writeValueAsString(payload);
+        kafkaTemplate.send(topic, json);
     }
 }

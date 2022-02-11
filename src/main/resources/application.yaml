@@ -1,19 +1,15 @@
-#spring:
-#  kafka:
-#    bootstrap-servers: localhost:29092
-#    consumer:
-#      group-id: reservationGrp
-#      key-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
-#      value-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
-#    producer:
-#      key-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
-#      value-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
-#    template:
-#      default-topic: reservation2
-kafka:
-  bootstrapAddress: localhost:29092
-  groupId: reservationGroup
-  topicName: reservation
+spring:
+  kafka:
+    bootstrap-servers: localhost:29092
+    consumer:
+      group-id: reservationGroup
+      key-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
+      value-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
+    producer:
+      key-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
+      value-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
+    template:
+      default-topic: reservation
 
 server:
   port: 8080

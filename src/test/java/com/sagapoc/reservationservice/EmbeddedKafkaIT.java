@@ -1,6 +1,9 @@
 package com.sagapoc.reservationservice;
 
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sagapoc.reservationservice.model.Reservation;
+import com.sagapoc.reservationservice.model.StatusEnum;
 import com.sagapoc.reservationservice.service.KafkaConsumer;
 import com.sagapoc.reservationservice.service.KafkaProducer;
 import org.junit.jupiter.api.Test;
@@ -10,11 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.annotation.DirtiesContext;
 
-import java.util.concurrent.TimeUnit;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
@@ -28,17 +27,27 @@ public class EmbeddedKafkaIT {
     @Autowired
     private KafkaConsumer consumer;
 
-    @Value("${kafka.topicName}")
+    @Value("${spring.kafka.template.default-topic}")
     private String topic;
 
     @Test
     public void givenEmbeddedKafkaBroker_whenSendingtoSimpleProducer_thenMessageReceived()
             throws Exception {
-        Reservation payload = new Reservation();
-        producer.send(topic, payload);
-        consumer.getLatch().await(10000, TimeUnit.MILLISECONDS);
-
-        assertThat(consumer.getLatch().getCount(), equalTo(0L));
-        assertEquals(consumer.getPayload(), payload);
+        final String hotelName = "Holiday Inn";
+        final String carMake = "Ford";
+        final String carModel = "Model-T";
+        final String flightNumber = "801";
+        final String customerName = "Tom Brady";
+        Reservation reservation = new Reservation();
+        reservation.setCustomerName(customerName);
+        reservation.setHotelName(hotelName);
+        reservation.setCarMake(carMake);
+        reservation.setCarModel(carModel);
+        reservation.setStatus(StatusEnum.PENDING);
+        producer.send(topic, reservation);
+        Thread.sleep(5000);
+        String json = consumer.getPayload();
+        Reservation received = new ObjectMapper().readValue(json, Reservation.class);
+        assertEquals(reservation.getCustomerName(), received.getCustomerName());
     }
 }
