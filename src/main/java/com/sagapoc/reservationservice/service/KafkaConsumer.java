@@ -1,28 +1,37 @@
 package com.sagapoc.reservationservice.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sagapoc.reservationservice.model.Reservation;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.springframework.beans.factory.annotation.Value;
+import com.sagapoc.reservationservice.model.StatusEnum;
+import com.sagapoc.reservationservice.repository.ReservationRepository;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
-
-import java.util.concurrent.CountDownLatch;
 
 @Component
 public class KafkaConsumer {
 
     private String payload = null;
-    private CountDownLatch latch = new CountDownLatch(0);
+
+    private final ReservationRepository repository;
+
+    public KafkaConsumer(ReservationRepository repository) {
+        this.repository = repository;
+    }
 
     @KafkaListener(topics = "${spring.kafka.template.default-topic}")
     public void receive(String reservation) {
-        System.out.println("received payload='" + reservation.toString() + "'");
+        System.out.println("received payload='" + reservation + "'");
         setPayload(reservation);
-        latch.countDown();
-    }
+        try {
+            Reservation payloadReservation = new ObjectMapper().readValue(this.payload, Reservation.class);
+            if (StatusEnum.PENDING != payloadReservation.getStatus()) {
+                this.repository.save(payloadReservation);
+            }
+        } catch (JsonProcessingException e) {
+            System.out.println(e.getMessage());
+        }
 
-    public CountDownLatch getLatch() {
-        return latch;
     }
 
     public void setPayload(String payload) {

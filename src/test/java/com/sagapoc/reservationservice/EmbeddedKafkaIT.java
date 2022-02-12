@@ -1,6 +1,5 @@
 package com.sagapoc.reservationservice;
 
-import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sagapoc.reservationservice.model.Reservation;
 import com.sagapoc.reservationservice.model.StatusEnum;
@@ -31,12 +30,11 @@ public class EmbeddedKafkaIT {
     private String topic;
 
     @Test
-    public void givenEmbeddedKafkaBroker_whenSendingtoSimpleProducer_thenMessageReceived()
+    public void givenEmbeddedKafkaBroker_whenSendingToSimpleProducer_thenMessageReceived()
             throws Exception {
         final String hotelName = "Holiday Inn";
         final String carMake = "Ford";
         final String carModel = "Model-T";
-        final String flightNumber = "801";
         final String customerName = "Tom Brady";
         Reservation reservation = new Reservation();
         reservation.setCustomerName(customerName);
