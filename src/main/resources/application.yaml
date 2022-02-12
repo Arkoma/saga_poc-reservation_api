@@ -5,9 +5,11 @@ spring:
       group-id: reservationGroup
       key-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
       value-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
+      bootstrap-servers: kafka:29092
     producer:
       key-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
       value-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
+      bootstrap-servers: kafka:29092
     template:
       default-topic: reservation
 
