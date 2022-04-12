@@ -7,6 +7,8 @@ import com.sagapoc.reservationservice.repository.ReservationRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ReservationService {
 
@@ -25,5 +27,13 @@ public class ReservationService {
         reservation.setStatus(StatusEnum.PENDING);
         this.producer.send(topic, reservation);
         return this.repository.save(reservation);
+    }
+
+    public List<Reservation> getAllReservations() {
+        return this.repository.findAll();
+    }
+
+    public Reservation findReservationById(Long id) {
+        return this.repository.findById(id).orElse(null);
     }
 }
